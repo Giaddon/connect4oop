@@ -11,6 +11,8 @@ class Game {
     this.width = width; 
     this.currPlayer = 1;
     this.board = [];
+    this.makeBoard();
+    this.makeHtmlBoard();
   }
 
   /** makeBoard: create in-JS board structure:
@@ -33,7 +35,7 @@ class Game {
     // make column tops (clickable area for adding a piece to that column)
     let top = document.createElement('tr');
     top.setAttribute('id', 'column-top');
-    top.addEventListener('click', this.handleClick);
+    top.addEventListener('click', this.handleClick.bind(this));
 
     for (let x = 0; x < this.width; x++) {
       let headCell = document.createElement('td');
@@ -86,7 +88,7 @@ class Game {
   }
   
   /** handleClick: handle click of column top to play piece */
-  handleClick = (evt) => {
+  handleClick(evt) {
     // get x from ID of clicked cell
     let x = +evt.target.id;
     // get next spot in column (if none, ignore click)
@@ -118,6 +120,23 @@ class Game {
   /** checkForWin: check board cell-by-cell for "does a win start here?" */
 
   checkForWin() {
+
+      //let anotherWin = _win.bind(this);
+
+      const _win = (cells) => {
+      // Check four cells to see if they're all color of current player
+      //  - cells: list of four (y, x) cells
+      //  - returns true if all are legal coordinates & all match currPlayer
+  
+      return cells.every(
+        ([y, x]) =>
+          y >= 0 &&
+          y < this.height &&
+          x >= 0 &&
+          x < this.width &&
+          this.board[y][x] === this.currPlayer
+      );
+    }
   
     
 
@@ -131,31 +150,18 @@ class Game {
         let diagDL = [[y, x], [y + 1, x - 1], [y + 2, x - 2], [y + 3, x - 3]];
 
         // find winner (only checking each win-possibility as needed)
-        if (this._win(horiz) || this._win(vert) || this._win(diagDR) || this._win(diagDL)) {
+        if ( _win(horiz) || _win(vert) || _win(diagDR) || _win(diagDL) ) {
           return true;
         }
       }
     }
   }
 
-  _win(cells) {
-    // Check four cells to see if they're all color of current player
-    //  - cells: list of four (y, x) cells
-    //  - returns true if all are legal coordinates & all match currPlayer
-
-    return cells.every(
-      ([y, x]) =>
-        y >= 0 &&
-        y < this.height &&
-        x >= 0 &&
-        x < this.width &&
-        this.board[y][x] === this.currPlayer
-    );
-  }
+  
   
 
 }
 
 let game = new Game(6, 7);
-game.makeBoard();
-game.makeHtmlBoard();
+// game.makeBoard();
+// game.makeHtmlBoard();
