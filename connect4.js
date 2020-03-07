@@ -11,10 +11,17 @@ class Game {
     this.width = width; 
     this.currPlayer = 1;
     this.board = [];
+    this.gameRunning = false;
+    this.gameOver = false;
     this.makeBoard();
     this.makeHtmlBoard();
+
+    let button = document.getElementById("start");
+    button.addEventListener('click', this.startGame);
   }
 
+
+  
   /** makeBoard: create in-JS board structure:
   *   board = array of rows, each row is array of cells  (board[y][x])
   */
@@ -84,11 +91,20 @@ class Game {
   
   /** endGame: announce game end */
   endGame(msg) {
+    this.gameOver = true;
     alert(msg);
   }
   
   /** handleClick: handle click of column top to play piece */
   handleClick(evt) {
+
+    if(this.gameOver){
+      return;
+    }
+
+    if (this.gameRunning === false) {
+      return;
+    }
     // get x from ID of clicked cell
     let x = +evt.target.id;
     // get next spot in column (if none, ignore click)
@@ -157,11 +173,16 @@ class Game {
     }
   }
 
+startGame = () => {
   
-  
-
+   if (this.gameRunning) {
+      location.reload();
+   } else {
+      this.gameRunning = true;
+   } 
+ }
+ 
 }
 
 let game = new Game(6, 7);
-// game.makeBoard();
-// game.makeHtmlBoard();
+
